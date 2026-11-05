@@ -1,0 +1,31 @@
+# Flower'a bu projenin ne olduğunu ve parçalarının nerede olduğunu anlatan dosya.
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "fedlora"
+version = "0.1.0"
+description = "Qwen + LoRA ile federe öğrenme (tıp + finans)"
+# Kütüphaneleri buraya YAZMIYORUZ: Flower 1.40 her çalıştırmada bunları ayrı bir
+# ortama baştan indiriyor (torch dahil birkaç GB). Hepsi zaten fedlora ortamında kurulu
+# (Windows'ta biz kurduk, Mac'lerde kurulum.sh kuruyor).
+dependencies = ["flwr[simulation]>=1.40.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+[tool.flwr.app]
+publisher = "bersu"
+
+# Hangi dosyada sunucu, hangisinde istemci var?
+[tool.flwr.app.components]
+serverapp = "server_app:app"
+clientapp = "client_app:app"
+
+# Çalıştırırken değiştirilebilen ayarlar. Örnek:
+#   flwr run . --run-config "bolme='iid'"
+[tool.flwr.app.config]
+bolme = "noniid"     # "noniid": A sadece tıp, B sadece finans  |  "iid": karışık
+tur-sayisi = 5
